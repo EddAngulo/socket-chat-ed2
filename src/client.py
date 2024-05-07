@@ -2,23 +2,24 @@
 import socket
 import sys
 
-server_ip_address = '172.17.9.62'
-server_port = 8081
+SERVER_IP_ADDRESS = '172.17.9.62'
+SERVER_PORT = 8081
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.connect((server_ip_address, server_port))
+socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+socket_.connect((SERVER_IP_ADDRESS, SERVER_PORT))
+
 while True:
-    stream_list = [sys.stdin, server_socket]
+    stream_list = [sys.stdin, socket_]
     # read_sockets, write_sockets, error_sockets = select.select(stream_list, [], [])
     for stream in stream_list: # read_sockets
-        if stream == server_socket:
-            message = stream.recv(2048)
+        if stream == socket_:
+            message = socket_.recv(2048)
             print(message)
         else:
             message = sys.stdin.readline()
-            server_socket.send(bytes(message, 'utf-8'))
+            socket_.send(bytes(message, 'utf-8'))
             sys.stdout.write('<You> ')
             sys.stdout.write(message)
             sys.stdout.flush()
 
-server_socket.close()
+socket_.close()
